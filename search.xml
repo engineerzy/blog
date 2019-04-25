@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[权利的游戏]]></title>
+    <url>%2Fengineerzy.github.io%2F%E6%9D%83%E5%8A%9B%E7%9A%84%E6%B8%B8%E6%88%8F%2F</url>
+    <content type="text"><![CDATA[一周等一集的寂寞谁能懂？好在每一集都还挺长，稍稍能给点安慰，只不过腾讯每次都删减“激情”部分，就很不爽每次一到 “刺激” “关键” 时候 就给你直接掐断，看看这是人干的事吗？]]></content>
+      <categories>
+        <category>影视</category>
+      </categories>
+      <tags>
+        <tag>权利的游戏</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[ES6]]></title>
     <url>%2Fengineerzy.github.io%2FES6%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%2F</url>
     <content type="text"><![CDATA[箭头函数 箭头函数自动绑定上下文，即this的指向不是在调用时决定，而是在定义时就已经指定好了this的指向 不可以使用new命令当做构造函数使用 函数内部不能访问arguments对象 参数只有一个时，可以省略括号 当有返回值且代码只有一行时，可以省略函数体的花括号，直接用括号表示 装饰器(修饰器) 可以修改类的函数 在编译时执行 第一个参数为要修饰的类 装饰器后面紧跟要被修饰的类 12345678910const decorator = (target) =&gt; &#123; target.age = 15&#125;@decoratorclass Person &#123; constructor() &#123; this.age = 18 &#125;&#125; 如果想接收多个参数，也可以以返回函数的形式 123456789101112131415161718const decorator = (payload) =&gt; &#123; return function(target) &#123; target.age = payload &#125;&#125;@decorator(18)class Person &#123; constructor() &#123; this.age = 12 &#125; speak() &#123; console.log(`我的年纪是$&#123;this.age&#125;`) &#125;&#125;const human = new Person()human.speak() class类的继承 通过关键字 extends 实现class的继承 123456789101112131415161718192021222324class Parent &#123; constructor(name) &#123; this.name = name &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125; walk() &#123; console.log(`$&#123;this.name&#125;正在行走`) &#125;&#125;class Son extends &#123; constructor(name) &#123; super() this.name = name &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125;&#125;const parent = new Parent("王五")const son = new Son("张三")son.walk() // 张三正在行走 继承父类的子类的constructor构造函数里必须调用super()方法 123456789101112131415161718192021 class Parent &#123; constructor(options = &#123;&#125;) &#123; for(let key in options) &#123; if(options.hasOwnProperty(key)) &#123; this[key] = options[key] &#125; &#125; &#125; &#125;class Son extends Parent &#123; constructor(options = &#123;&#125;) &#123; for(let key in options) &#123; if(options.hasOwnProperty(key)) &#123; this[key] = options[key] &#125; &#125; &#125;&#125;const son = new Son(&#123;name: '张三'&#125;)//报错: Uncaught ReferenceError: Must call super constructor in derived class before accessing 'this' or returning from derived constructor super可以被当做对象或者方式使用，当做对象使用时，super相当于父类构造函数的原型 prototype属性；当做方法调用时代表调用父类的构造函数，相当于Parent.prototype.constructor.call(this)，且super()方法只能在子类的构造函数里使用，使用在其他地方均会报错 super当做对象在子类原型方法中使用时，相当于是使用父类的原型，所以当使用定义在父类实例上的方法时会报错；且super调用父类原型上的方法时，方法中的this指向子类的实例; 当做对象在子类静态方法或属性中使用时，super指向父类； 123456789101112131415161718192021class Parent &#123; constructor() &#123; this.name = "爸爸" &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125;&#125;class Son extends Parent &#123; constructor() &#123; super() this.name = "儿子" &#125; speak() &#123; super.speak() &#125;&#125;const son = new Son()son.speak()// 我的名字叫儿子； 因为son继承Parent父类，son可以访问父类原型上的方法，但是此时speak方法中的this指向子类]]></content>
@@ -17,6 +28,17 @@
       </categories>
       <tags>
         <tag>前端 redux dva</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <url>%2Fengineerzy.github.io%2F%E5%88%9B%E4%BD%9C%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E6%96%87%2F</url>
+    <content type="text"><![CDATA[Hello World]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>blog</tag>
       </tags>
   </entry>
   <entry>
