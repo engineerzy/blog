@@ -1768,7 +1768,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #7858ff;
+  background: #f11dac;
 }
 .feed-link,
 .chat {
@@ -2779,4 +2779,34 @@ ul.breadcrumb li+li:last-child {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+@media screen and (min-width: 1000px) {
+  body {
+    background-image: url("/engineerzy.github.io/uploads/bg.jpeg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 50% 50%;
+  }
+  #footer a {
+    color: #eee;
+  }
+}
+.content-wrap {
+  background-color: #fff;
+  opacity: 0.8;
+}
+.header-inner {
+  background-color: transparent;
+}
+.menu {
+  background-color: #fff;
+  opacity: 0.8;
+  margin: 0px;
+}
+.sidebar {
+  background-color: #fff;
+  opacity: 0.8 !important;
+}
+.content-wrap {
+  min-height: 775px;
 }
