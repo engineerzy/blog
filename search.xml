@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[react-hooks]]></title>
+    <url>%2Fengineerzy.github.io%2Freact-hooks%2F</url>
+    <content type="text"><![CDATA[react-hooks （一）&nbsp;&nbsp;&nbsp;&nbsp;hooks尚未正式推出前 就在react官方文档上了解了一下，当时不太明白hooks的作用以及相比class组件有哪些优势，只记得有一点说是可以更好的将相关逻辑聚合在一起，以达到更高的复用性。咋一看没明白意思，class组件里的生命周期钩子组织代码不是更加清晰吗。最近使用hooks写了一份demo，在练习的过程中，对官方的说明也逐渐理解了一些。&nbsp;&nbsp;&nbsp;&nbsp;以往的class组件，在组件从挂载到卸载的各个生命周期阶段，都会有相应的钩子函数，开发的过程中可以在各个生命周期钩子中编写相关的代码。但这样也会带来的一定的问题，以官方的例子来说明 订阅好友在线状态和改变网页标题123456789101112131415161718192021222324252627282930313233class FriendStatusWithCounter extends React.Component &#123; constructor(props) &#123; super(props); this.state = &#123; count: 0, isOnline: null &#125;; this.handleStatusChange = this.handleStatusChange.bind(this); &#125; componentDidMount() &#123; document.title = `You clicked $&#123;this.state.count&#125; times`; ChatAPI.subscribeToFriendStatus( this.props.friend.id, this.handleStatusChange ); &#125; componentDidUpdate() &#123; // 相同的逻辑在componentDidMount中已经实现了一遍，重复代码，且理解上不直观，如果这里是大量的计算开销，或者异步请求等，即便封装成函数也需要在两个生命周期里调用 document.title = `You clicked $&#123;this.state.count&#125; times`; &#125; componentWillUnmount() &#123; // 取消订阅与挂载阶段的开始订阅对应，以组件生命周期来说，很好理解：挂载阶段开始订阅，卸载阶段取消订阅。但是两个地方代码其都是用来处理订阅功能，却被分散到不同的钩子中。带来的问题首先是订阅相关的功能不能复用，虽然可以用高阶组件的形式来达到复用，但仅仅只为一个功能的复用而使用高阶组件包裹有些浪费，如果在挂载和卸载阶段还有更多需要完成的功能，比如大量的监听事件，当然这些都可以一起在高阶组件中完成，但这个高阶组件仍不完美，可能有的组件只监听鼠标移动，有的组件鼠标移动和键盘事件甚至更多的事件需要监听，只靠一个高阶组件就无法实现，需要编写能满足多种需求的高阶组件来实现。太多的高阶组件嵌套不利于调试。 ChatAPI.unsubscribeFromFriendStatus( this.props.friend.id, this.handleStatusChange ); &#125; handleStatusChange(status) &#123; this.setState(&#123; isOnline: status.isOnline &#125;); &#125; &nbsp;&nbsp;&nbsp;&nbsp;hooks的出现使得class组件带来的不便得以解决，hooks只能用在函数式组件中，react16.8以前的版本中，函数式组件因为没有实例对象，所以不能拥有自己的状态，也没有生命周期钩子，只能依赖传入的props来实现组件的渲染。hooks利用闭包的形式实现了函数式组件可以拥有自己状态的功能，且useEffect对标的就是类组件的componentDidMount和componentDidUpdate函数，一个函数式组件可以有多个useEffect，这就为相关功能代码的聚合提供了可能。仍热以上述订阅好友在线状态和修改网页标题为例 1234567891011121314151617181920212223242526272829303132const FriendStatusWithCounter: React.FC = () =&gt; &#123; const [count, setCount] = useState&lt;number&gt;(0) const [status, setStatus]= useState&lt;boolean&gt;(false) // 订阅好友在线状态 useEffect(() =&gt; &#123; const isOnline = ChatAPI.subscribeToFriendStatus( this.props.friend.id, this.handleStatusChange ); setStatus(isOnline) return () =&gt; &#123; ChatAPI.unsubscribeFromFriendStatus( this.props.friend.id, this.handleStatusChange ); &#125; &#125;, []) // 修改网页标题 useEffect(() =&gt; &#123; document.title = `You clicked $&#123;this.state.count&#125; times`; &#125;, [count]) return ( &lt;div&gt; &lt;button onClick=&#123;() =&gt; setCount(count + 1)&#125;&gt;点击&lt;/button&gt; &lt;button onClick=&#123;() =&gt; setStatus(!status)&#125;&gt;点击&lt;/button&gt; &lt;div&gt;在线状态&#123;status&#125;&lt;/div&gt; &lt;/div&gt; )&#125; &nbsp;&nbsp;&nbsp;&nbsp;使用hooks后同一功能的代码被聚合到一起，且与其他功能互不影响，可复用性高，抽离成自定义hooks则可以在任何其他函数式组件中使用。 1234567891011121314151617181920212223242526272829303132333435363738// 订阅好友在线状态const useFriendStatus = (): &#123;status: boolean, setStatus: (s: boolean = false) =&gt; void&#125; =&gt; &#123;const [status, setStatus]= useState&lt;boolean&gt;(false)useEffect(() =&gt; &#123; const isOnline = ChatAPI.subscribeToFriendStatus( this.props.friend.id, this.handleStatusChange ); setStatus(isOnline) return () =&gt; &#123; ChatAPI.unsubscribeFromFriendStatus( this.props.friend.id, this.handleStatusChange ); &#125; &#125;, []) return &#123;status, setStatus&#125;&#125;// 修改网页标题const useDocumentTitle = (): &#123;count: number, setCount: (c: number = 0) =&gt; void&#125; =&gt; &#123; const [count, setCount] = useState&lt;number&gt;(0) useEffect(() =&gt; &#123; document.title = `You clicked $&#123;this.state.count&#125; times`; &#125;, [count]) return &#123;count, setCount&#125;&#125;const FriendStatusWithCounter: React.FC = () =&gt; &#123; const &#123;count, setCount&#125; = useDocumentTitle() const &#123;status, setStatus&#125; = useFriendStatus() return ( &lt;div&gt; &lt;button onClick=&#123;() =&gt; setCount(count + 1)&#125;&gt;点击&lt;/button&gt; &lt;button onClick=&#123;() =&gt; setStatus(!status)&#125;&gt;点击&lt;/button&gt; &lt;div&gt;在线状态&#123;status&#125;&lt;/div&gt; &lt;/div&gt; )&#125; &nbsp;&nbsp;&nbsp;&nbsp; 抽离出的useDocumentTitle、useFriendStatus两个自定义hook是两个完全独立互不影响且可复用的hook，每个自定义hook只专注于各自负责的功能模块，这样可以将组件拆分成更小的粒度，不同的功能逻辑封装成不同的hook，各个hook输出的内容完全取决于输入，与其他功能分离，职责单一，利于测试。]]></content>
+      <tags>
+        <tag>前端</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[ES6]]></title>
+    <url>%2Fengineerzy.github.io%2FES6%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%2F</url>
+    <content type="text"><![CDATA[箭头函数 箭头函数自动绑定上下文，即this的指向不是在调用时决定，而是在定义时就已经指定好了this的指向 不可以使用new命令当做构造函数使用 函数内部不能访问arguments对象 参数只有一个时，可以省略括号 当有返回值且代码只有一行时，可以省略函数体的花括号，直接用括号表示 装饰器(修饰器) 可以修改类的函数 在编译时执行 第一个参数为要修饰的类 装饰器后面紧跟要被修饰的类 12345678910const decorator = (target) =&gt; &#123; target.age = 15&#125;@decoratorclass Person &#123; constructor() &#123; this.age = 18 &#125;&#125; 如果想接收多个参数，也可以以返回函数的形式 123456789101112131415161718const decorator = (payload) =&gt; &#123; return function(target) &#123; target.age = payload &#125;&#125;@decorator(18)class Person &#123; constructor() &#123; this.age = 12 &#125; speak() &#123; console.log(`我的年纪是$&#123;this.age&#125;`) &#125;&#125;const human = new Person()human.speak() class类的继承 通过关键字 extends 实现class的继承 123456789101112131415161718192021222324class Parent &#123; constructor(name) &#123; this.name = name &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125; walk() &#123; console.log(`$&#123;this.name&#125;正在行走`) &#125;&#125;class Son extends &#123; constructor(name) &#123; super() this.name = name &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125;&#125;const parent = new Parent("王五")const son = new Son("张三")son.walk() // 张三正在行走 继承父类的子类的constructor构造函数里必须调用super()方法 123456789101112131415161718192021 class Parent &#123; constructor(options = &#123;&#125;) &#123; for(let key in options) &#123; if(options.hasOwnProperty(key)) &#123; this[key] = options[key] &#125; &#125; &#125; &#125;class Son extends Parent &#123; constructor(options = &#123;&#125;) &#123; for(let key in options) &#123; if(options.hasOwnProperty(key)) &#123; this[key] = options[key] &#125; &#125; &#125;&#125;const son = new Son(&#123;name: '张三'&#125;)//报错: Uncaught ReferenceError: Must call super constructor in derived class before accessing 'this' or returning from derived constructor super可以被当做对象或者方式使用，当做对象使用时，super相当于父类构造函数的原型 prototype属性；当做方法调用时代表调用父类的构造函数，相当于Parent.prototype.constructor.call(this)，且super()方法只能在子类的构造函数里使用，使用在其他地方均会报错 super当做对象在子类原型方法中使用时，相当于是使用父类的原型，所以当使用定义在父类实例上的方法时会报错；且super调用父类原型上的方法时，方法中的this指向子类的实例; 当做对象在子类静态方法或属性中使用时，super指向父类； 123456789101112131415161718192021class Parent &#123; constructor() &#123; this.name = "爸爸" &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125;&#125;class Son extends Parent &#123; constructor() &#123; super() this.name = "儿子" &#125; speak() &#123; super.speak() &#125;&#125;const son = new Son()son.speak()// 我的名字叫儿子； 因为son继承Parent父类，son可以访问父类原型上的方法，但是此时speak方法中的this指向子类]]></content>
+      <categories>
+        <category>前端</category>
+      </categories>
+  </entry>
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <url>%2Fengineerzy.github.io%2FHelloWorld%2F</url>
+    <content type="text"><![CDATA[第一遍博文献给Hellow World]]></content>
+  </entry>
+  <entry>
+    <title><![CDATA[权利的游戏]]></title>
+    <url>%2Fengineerzy.github.io%2F%E6%9D%83%E5%8A%9B%E7%9A%84%E6%B8%B8%E6%88%8F%2F</url>
+    <content type="text"><![CDATA[一周等一集的寂寞谁能懂？好在每一集都还挺长，稍稍能给点安慰，只不过腾讯每次都删减“激情”部分，就很不爽每次一到 “刺激” “关键” 时候 就给你直接掐断，看看这是人干的事吗？]]></content>
+      <categories>
+        <category>影视</category>
+      </categories>
+      <tags>
+        <tag>权利的游戏</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[关于前端]]></title>
     <url>%2Fengineerzy.github.io%2F%E5%85%B3%E4%BA%8E%E5%89%8D%E7%AB%AF%2F</url>
     <content type="text"><![CDATA[关于前端接触前端2年多了，从最开始的的html、css、javascript到如今各种前端框架vue、react、angular，还有各种打包工具等等，各种新技术层出不穷。往往是上一个技术点还没完全掌握，下一次更新就已经来了，得益于node.js在服务端的蓬勃发展，各种基于node的前端工具也是百花齐放。百家争鸣肯定是好的，但是也给从事前端的同学们造成了不小的学习压力，而且太多的选择会给人一种杂乱不统一的感觉，在开发过程中需要一个经验丰富的资深大佬来带领做抉择，年轻的前端开发者往往会困于经验，盲目跟进选择，导致后面的开发过程中如果遇上由工具或框架本身带来的坑，而手足无措，无法解决问题。有人说之所以学起来会觉得吃力是因为js基础掌握不牢固导致的，对于这种说法我不是很认同，js基础固然是很重要的一方面，但是在代码的世界里抽象的思维能力才是最重要的，很多著名的开源库，我相信大部分工作了几年的前端程序员都是能看得懂每一份文件里代码所做的工作的，但是将这些文件组合起来看时，就会不明所以，不知道为何要这样做，这样做的目的好处是什么。因为代码不仅仅只体现一个程序员的码力，更多的是体现一个程序员的思维能力。学习一个库的过程最开始是学些如何使用，进阶是如何优化，最后是学习并理解作者的编程思想。所以当学习某个框架或库时觉得吃力，更多的原因是理解不了作者的编程思想，而编程思想更多的与从业年限资历有关，当然js基础是理解编程思想的最基本也是最不可缺少的前提。]]></content>
@@ -18,30 +50,6 @@
       <tags>
         <tag>影视</tag>
       </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[权利的游戏]]></title>
-    <url>%2Fengineerzy.github.io%2F%E6%9D%83%E5%8A%9B%E7%9A%84%E6%B8%B8%E6%88%8F%2F</url>
-    <content type="text"><![CDATA[一周等一集的寂寞谁能懂？好在每一集都还挺长，稍稍能给点安慰，只不过腾讯每次都删减“激情”部分，就很不爽每次一到 “刺激” “关键” 时候 就给你直接掐断，看看这是人干的事吗？]]></content>
-      <categories>
-        <category>影视</category>
-      </categories>
-      <tags>
-        <tag>权利的游戏</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[ES6]]></title>
-    <url>%2Fengineerzy.github.io%2FES6%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%2F</url>
-    <content type="text"><![CDATA[箭头函数 箭头函数自动绑定上下文，即this的指向不是在调用时决定，而是在定义时就已经指定好了this的指向 不可以使用new命令当做构造函数使用 函数内部不能访问arguments对象 参数只有一个时，可以省略括号 当有返回值且代码只有一行时，可以省略函数体的花括号，直接用括号表示 装饰器(修饰器) 可以修改类的函数 在编译时执行 第一个参数为要修饰的类 装饰器后面紧跟要被修饰的类 12345678910const decorator = (target) =&gt; &#123; target.age = 15&#125;@decoratorclass Person &#123; constructor() &#123; this.age = 18 &#125;&#125; 如果想接收多个参数，也可以以返回函数的形式 123456789101112131415161718const decorator = (payload) =&gt; &#123; return function(target) &#123; target.age = payload &#125;&#125;@decorator(18)class Person &#123; constructor() &#123; this.age = 12 &#125; speak() &#123; console.log(`我的年纪是$&#123;this.age&#125;`) &#125;&#125;const human = new Person()human.speak() class类的继承 通过关键字 extends 实现class的继承 123456789101112131415161718192021222324class Parent &#123; constructor(name) &#123; this.name = name &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125; walk() &#123; console.log(`$&#123;this.name&#125;正在行走`) &#125;&#125;class Son extends &#123; constructor(name) &#123; super() this.name = name &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125;&#125;const parent = new Parent("王五")const son = new Son("张三")son.walk() // 张三正在行走 继承父类的子类的constructor构造函数里必须调用super()方法 123456789101112131415161718192021 class Parent &#123; constructor(options = &#123;&#125;) &#123; for(let key in options) &#123; if(options.hasOwnProperty(key)) &#123; this[key] = options[key] &#125; &#125; &#125; &#125;class Son extends Parent &#123; constructor(options = &#123;&#125;) &#123; for(let key in options) &#123; if(options.hasOwnProperty(key)) &#123; this[key] = options[key] &#125; &#125; &#125;&#125;const son = new Son(&#123;name: '张三'&#125;)//报错: Uncaught ReferenceError: Must call super constructor in derived class before accessing 'this' or returning from derived constructor super可以被当做对象或者方式使用，当做对象使用时，super相当于父类构造函数的原型 prototype属性；当做方法调用时代表调用父类的构造函数，相当于Parent.prototype.constructor.call(this)，且super()方法只能在子类的构造函数里使用，使用在其他地方均会报错 super当做对象在子类原型方法中使用时，相当于是使用父类的原型，所以当使用定义在父类实例上的方法时会报错；且super调用父类原型上的方法时，方法中的this指向子类的实例; 当做对象在子类静态方法或属性中使用时，super指向父类； 123456789101112131415161718192021class Parent &#123; constructor() &#123; this.name = "爸爸" &#125; speak() &#123; console.log(`我的名字叫$&#123;this.name&#125;`) &#125;&#125;class Son extends Parent &#123; constructor() &#123; super() this.name = "儿子" &#125; speak() &#123; super.speak() &#125;&#125;const son = new Son()son.speak()// 我的名字叫儿子； 因为son继承Parent父类，son可以访问父类原型上的方法，但是此时speak方法中的this指向子类]]></content>
-      <categories>
-        <category>前端</category>
-      </categories>
-  </entry>
-  <entry>
-    <title><![CDATA[Hello World]]></title>
-    <url>%2Fengineerzy.github.io%2FHelloWorld%2F</url>
-    <content type="text"><![CDATA[第一遍博文献给Hellow World]]></content>
   </entry>
   <entry>
     <title><![CDATA[ES6对象新增属性和方法]]></title>
