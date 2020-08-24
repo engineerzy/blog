@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title></title>
+    <url>%2Fblog%2Findex%2F</url>
+    <content type="text"><![CDATA[Document * { margin: 0; padding: 0; } .text-wrap { width: 200px; height: 200px; border: 1px solid #cccccc; font-size: 16px; color: #333333; overflow: auto; box-sizing: border-box; padding: 20px; } .list { width: 100%; overflow-x: scroll; border: 1px solid #cccccc; /* display: flex; */ /* justify-content: flex-start; align-content: center; */ /* display: inline-block; */ white-space: nowrap; /* flex-wrap: nowrap; */ } .list-item { display: inline-block; width: 50px; height: 60px; /* float: left; */ box-sizing: border-box; margin: 0 10px; background-color: hotpink; } 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， 这是一段文本， const wrap = document.getElementById('text-wrap') const list = document.getElementById('list') console.log('clientWidth ==>', wrap.clientWidth) console.log('clientHeight ==>', wrap.clientHeight) console.log('clientLeft ==>', wrap.clientLeft) console.log('clientTop ==>', wrap.clientTop) console.log('offsetWidth ==>', wrap.offsetWidth) console.log('offsetHeight ==>', wrap.offsetHeight) console.log('offsetLeft ==>', wrap.offsetLeft) console.log('offsetTop ==>', wrap.offsetTop) console.log('scrollWidth ==>', list.scrollWidth) console.log('scrollHeight ==>', list.scrollHeight) wrap.addEventListener('scroll', function () { console.log('scrollTop ==>', wrap.scrollTop) console.log('scrollLeft ==>', wrap.scrollLeft) })]]></content>
+  </entry>
+  <entry>
+    <title><![CDATA[offsetWidth、offsetHeight、offsetLeft、offsetTop、scrollTop、scrollLeft的区别]]></title>
+    <url>%2Fblog%2FoffsetWidth%E3%80%81offsetHeight%E3%80%81offsetLeft%E3%80%81offsetTop%E3%80%81scrollTop%E3%80%81scrollLeft%2F</url>
+    <content type="text"><![CDATA[offsetHeight offsetWidthoffsetWidth指盒子可见区域的宽度，不包括滚动条，包含边框和padding;offsetHeight指的是盒子可见区域的高度，不包括滚动条，包含边框和padding; offsetTop offsetLeftoffsetTop指当前盒子border到父盒子border垂直方向的距离offsetLeft指当前盒子border到父盒子border水平方向的距离 clientWidth clientHeightclientWidth指盒子的实际内容宽度，不包括滚动条和边框，但包含paddingclientHeight指盒子的实际内容高度，不包括滚动条和边框，但包含padding clientLeft clientTopclientLeft 指盒子边框的宽度(一般来说)clientHeight 指盒子边框的高度(一般来说) scrollWidth scrollHeight 当没有滚动条时scrollWidth = clientWidthscrollHeight = clientHeight 当有滚动条时scrollWidth = 盒子内容的真实宽度scrollHeight = 盒子内容的真实高度 scrollTop scrollLeftscrollTop指盒子内容超出盒子区域后卷起的高度scrollLeft指盒子内容超出盒子区域后卷起的宽度]]></content>
+  </entry>
+  <entry>
     <title><![CDATA[ref的透传]]></title>
     <url>%2Fblog%2Fref%E7%9A%84%E9%80%8F%E4%BC%A0%2F</url>
     <content type="text"><![CDATA[react透传ref 在react中，所有的props都可以透传，唯独key和ref不能，因为key和ref，react组件会做特殊处理，在react 16.3的版本中，react更新了一个新api，React.forwardRef专门用来解决ref透传的问题 123456789101112131415161718192021222324252627282930// input.jsxconst Input = (props) =&gt; ( &lt;input &#123;...props&#125; /&gt;)// widthRef.jsxconst withRef = (WrapperComponent) =&gt; &#123; class Hoc extends WrapperComponent &#123; render () &#123; const &#123; forwardRef, ...restProps &#125; = this.props return &lt;WrapperComponent &#123;...restProps&#125; forwordRef=&#123;forwardRef&#125; /&gt; &#125; &#125; return React.forwardRef((props, ref) =&gt; (&lt;Hoc &#123;...props&#125; ref=&#123;ref&#125; /&gt;))&#125;// form.jsximport React, &#123; useRef, useEffect &#125; from 'react'import Input from './input'import withRef from './withRef'const HocInput = withRef(Input)const Form = () =&gt; &#123; const ref = useRef(null) useEffect(() =&gt; &#123; console.log('ref ==&gt;', ref) // 这里打印的ref将会是input控件，可以对input控件做一些操作，如聚焦，或者输入默认值等等 &#125;, [ref]) return ( &lt;HocInput ref=&#123;ref&#125; /&gt; )&#125;]]></content>
@@ -44,9 +54,15 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[Hello World]]></title>
-    <url>%2Fblog%2FHelloWorld%2F</url>
-    <content type="text"><![CDATA[第一遍博文献给Hellow World, i am iron man]]></content>
+    <title><![CDATA[权利的游戏]]></title>
+    <url>%2Fblog%2F%E6%9D%83%E5%8A%9B%E7%9A%84%E6%B8%B8%E6%88%8F%2F</url>
+    <content type="text"><![CDATA[一周等一集的寂寞谁能懂？好在每一集都还挺长，稍稍能给点安慰，只不过腾讯每次都删减“激情”部分，就很不爽每次一到 “刺激” “关键” 时候 就给你直接掐断，看看这是人干的事吗？]]></content>
+      <categories>
+        <category>影视</category>
+      </categories>
+      <tags>
+        <tag>权利的游戏</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[ES6]]></title>
@@ -57,15 +73,9 @@
       </categories>
   </entry>
   <entry>
-    <title><![CDATA[权利的游戏]]></title>
-    <url>%2Fblog%2F%E6%9D%83%E5%8A%9B%E7%9A%84%E6%B8%B8%E6%88%8F%2F</url>
-    <content type="text"><![CDATA[一周等一集的寂寞谁能懂？好在每一集都还挺长，稍稍能给点安慰，只不过腾讯每次都删减“激情”部分，就很不爽每次一到 “刺激” “关键” 时候 就给你直接掐断，看看这是人干的事吗？]]></content>
-      <categories>
-        <category>影视</category>
-      </categories>
-      <tags>
-        <tag>权利的游戏</tag>
-      </tags>
+    <title><![CDATA[Hello World]]></title>
+    <url>%2Fblog%2FHelloWorld%2F</url>
+    <content type="text"><![CDATA[第一遍博文献给Hellow World, i am iron man]]></content>
   </entry>
   <entry>
     <title><![CDATA[关于前端]]></title>
